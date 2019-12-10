@@ -19,8 +19,8 @@ public class TourPackageController {
     }
 
     @GetMapping(path = "all-tourPackages")
-    public List<TourPackageResponse> getAllTourPackages() {
-        return service.getAllTourPackages();
+    public ResponseEntity getAllTourPackages() {
+        return new ResponseEntity(service.getAllTourPackages(), HttpStatus.OK);
     }
 
     @PostMapping(path = "create-tourPackage")
