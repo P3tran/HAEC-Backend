@@ -2,10 +2,17 @@ package com.example.exploregreece.features.customer;
 
 import org.springframework.stereotype.Component;
 
-@Component
-public class CustomerEntityToResponseMapper {
+import java.util.function.Function;
 
-    public CustomerResponse mapToCustomerResponse(Customer customer) {
+@Component
+public class CustomerEntityToResponseMapper implements Function<Customer, CustomerResponse> {
+
+    private String mapFullName(Customer customer) {
+        return customer.getName() + " " + customer.getLastname();
+    }
+
+    @Override
+    public CustomerResponse apply(Customer customer) {
         return new CustomerResponse(
                 customer.getId(),
                 mapFullName(customer),
@@ -14,9 +21,5 @@ public class CustomerEntityToResponseMapper {
                 customer.getNumberOfBookings(),
                 customer.getStatus()
         );
-    }
-
-    private String mapFullName(Customer customer) {
-        return customer.getName() + " " + customer.getLastname();
     }
 }

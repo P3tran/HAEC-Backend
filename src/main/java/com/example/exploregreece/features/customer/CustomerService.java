@@ -28,7 +28,7 @@ public class CustomerService {
         List<CustomerResponse> customersToReturn = new ArrayList<>();
         Iterable<Customer> retrievedCustomers = repository.findAll();
         for (Customer cust : retrievedCustomers) {
-            customersToReturn.add(entityToResponseMapper.mapToCustomerResponse(cust));
+            customersToReturn.add(entityToResponseMapper.apply(cust));
         }
         return customersToReturn;
     }
@@ -38,7 +38,7 @@ public class CustomerService {
         Iterable<Customer> retrievedCustomers = repository.findAll();
         for (Customer cust : retrievedCustomers) {
             if (cust.getStatus() == status) {
-                CustomerResponse mappedCustomer = entityToResponseMapper.mapToCustomerResponse(cust);
+                CustomerResponse mappedCustomer = entityToResponseMapper.apply(cust);
                 customersToReturn.add(mappedCustomer);
             }
         }
@@ -65,7 +65,7 @@ public class CustomerService {
                 customerToUpdate.setTelephone(input.getTelephone());
 
             Customer savedCustomer = repository.save(customerToUpdate);
-            return entityToResponseMapper.mapToCustomerResponse(savedCustomer);
+            return entityToResponseMapper.apply(savedCustomer);
         }
     }
 
@@ -73,7 +73,7 @@ public class CustomerService {
     public CustomerResponse createCustomer(CustomerInput input) {
         Customer customerToSave = inputToEntityMapper.mapInputToEntity(input);
         Customer savedCustomer = repository.save(customerToSave);
-        CustomerResponse customerToReturn = entityToResponseMapper.mapToCustomerResponse(savedCustomer);
+        CustomerResponse customerToReturn = entityToResponseMapper.apply(savedCustomer);
         return customerToReturn;
     }
 
