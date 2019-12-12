@@ -11,9 +11,15 @@ import java.util.Optional;
 public class CustomerService {
 
     private CustomerRepository repository;
+    private CustomerEntityToResponseMapper entityToResponseMapper;
+    private CustomerInputToEntityMapper inputToEntityMapper;
 
-    public CustomerService(CustomerRepository repository) {
+    public CustomerService(CustomerRepository repository,
+                           CustomerEntityToResponseMapper entityToResponseMapper,
+                           CustomerInputToEntityMapper inputToEntityMapper) {
         this.repository = repository;
+        this.entityToResponseMapper = entityToResponseMapper;
+        this.inputToEntityMapper = inputToEntityMapper;
     }
 
     //(4) change the return type of the methods to the new model
@@ -22,7 +28,7 @@ public class CustomerService {
         List<CustomerResponse> customersToReturn = new ArrayList<>();
         Iterable<Customer> retrievedCustomers = repository.findAll();
         for (Customer cust : retrievedCustomers) {
-            customersToReturn.add(mapToCustomerResponse(cust));
+            customersToReturn.add(entityToResponseMapper.mapToCustomerResponse(cust));
         }
         return customersToReturn;
     }
@@ -32,7 +38,7 @@ public class CustomerService {
         Iterable<Customer> retrievedCustomers = repository.findAll();
         for (Customer cust : retrievedCustomers) {
             if (cust.getStatus() == status) {
-                CustomerResponse mappedCustomer = mapToCustomerResponse(cust);
+                CustomerResponse mappedCustomer = entityToResponseMapper.mapToCustomerResponse(cust);
                 customersToReturn.add(mappedCustomer);
             }
         }
@@ -59,20 +65,34 @@ public class CustomerService {
                 customerToUpdate.setTelephone(input.getTelephone());
 
             Customer savedCustomer = repository.save(customerToUpdate);
-            return mapToCustomerResponse(savedCustomer);
+            return entityToResponseMapper.mapToCustomerResponse(savedCustomer);
         }
     }
 
     //(POST - 3) create a method that returns customer response and accepts customer input
     public CustomerResponse createCustomer(CustomerInput input) {
-        Customer customerToSave = mapFromInputToCustomer(input);
+        Customer customerToSave = inputToEntityMapper.mapInputToEntity(input);
         Customer savedCustomer = repository.save(customerToSave);
-        CustomerResponse customerToReturn = mapToCustomerResponse(savedCustomer);
+        CustomerResponse customerToReturn = entityToResponseMapper.mapToCustomerResponse(savedCustomer);
         return customerToReturn;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //(POST - 2) create a method that returns customer from customerInput
-    private Customer mapFromInputToCustomer(CustomerInput input) {
+/*    private Customer mapFromInputToCustomer(CustomerInput input) {
         return new Customer(
                 input.getName(),
                 input.getLastname(),
@@ -81,9 +101,9 @@ public class CustomerService {
                 input.getNumberOfBookings(),
                 mapCustomerStatus(input.getNumberOfBookings())
         );
-    }
+    }*/
 
-    private CustomerStatus mapCustomerStatus(int numberOfBookings) {
+/*    private CustomerStatus mapCustomerStatus(int numberOfBookings) {
         if(numberOfBookings < 5)
             return CustomerStatus.NEW;
         else if(numberOfBookings <10)
@@ -92,10 +112,10 @@ public class CustomerService {
             return CustomerStatus.GOLD;
         else
             return CustomerStatus.PLATINUM;
-    }
+    }*/
 
     //(2) Create a method that received a database model and returns the new model
-    private CustomerResponse mapToCustomerResponse(Customer customer) {
+/*    private CustomerResponse mapToCustomerResponse(Customer customer) {
         return new CustomerResponse(
                 customer.getId(),
                 mapFullName(customer),
@@ -108,5 +128,5 @@ public class CustomerService {
 
     private String mapFullName(Customer customer) {
         return customer.getName() + " " + customer.getLastname();
-    }
+    }*/
 }
