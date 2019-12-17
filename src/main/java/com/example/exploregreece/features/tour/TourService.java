@@ -1,19 +1,25 @@
 package com.example.exploregreece.features.tour;
 
+import com.example.exploregreece.features.tourpackage.TourPackage;
+import com.example.exploregreece.features.tourpackage.TourPackageNotFoundException;
+import com.example.exploregreece.features.tourpackage.TourPackageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 //(3) All services must be annotated with below
 @Service
 public class TourService {
 
     private TourRepository repository;
+    private TourPackageRepository tourPackageRepository;
 
     //Spring boot can inject the repository because it extends CrudRepository and has @Repository annotation
-    public TourService(TourRepository repository) {
+    public TourService(TourRepository repository, TourPackageRepository tourPackageRepository) {
         this.repository = repository;
+        this.tourPackageRepository = tourPackageRepository;
     }
 
     //public method that the controller uses to retrieve all tours
@@ -35,6 +41,30 @@ public class TourService {
                 toursToReturn.add(mapToResponse(tour));
         }
         return toursToReturn;
+    }
+
+    public TourResponse createTour(TourInput input)
+            throws TourPackageNotFoundException {
+        Tour mappedTour = mapInputToEntity(input);
+
+        Optional<TourPackage> optional = tourPackageRepository.findById(input.getTourPackageId());
+        if(optional.isEmpty())
+            throw new TourPackageNotFoundException();
+        mappedTour.setTourPackage(optional.get());
+
+        Tour savedTour = repository.save(mappedTour);
+        return mapToResponse(savedTour);
+    }
+
+
+    private Tour mapInputToEntity(TourInput input) {
+        return new Tour(
+                input.getTitle(),
+                input.getShortDescription(),
+                input.getHoursDuration(),
+                input.getPrice(),
+                null
+        );
     }
 
     private TourResponse mapToResponse(Tour tour) {

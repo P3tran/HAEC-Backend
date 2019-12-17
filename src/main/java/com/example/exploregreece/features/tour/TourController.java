@@ -1,11 +1,10 @@
 package com.example.exploregreece.features.tour;
 
 import com.example.exploregreece.features.CustomError;
+import com.example.exploregreece.features.tourpackage.TourPackageNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,4 +36,25 @@ public class TourController {
         else
             return new ResponseEntity(service.getToursByPrice(price), HttpStatus.OK);
     }
+
+    @PostMapping(path = "create-tour")
+    public ResponseEntity createTour(@RequestBody TourInput input) {
+
+        try {
+            return new ResponseEntity(
+                    service.createTour(input),
+                    HttpStatus.CREATED
+            );
+        } catch (TourPackageNotFoundException e) {
+            return new ResponseEntity(
+                    new CustomError(
+                            0,
+                            "Wrong Input",
+                            "Tour package not found"
+                    ),
+                    HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }
