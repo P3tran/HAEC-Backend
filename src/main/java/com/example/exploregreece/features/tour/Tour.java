@@ -5,7 +5,7 @@ import com.example.exploregreece.features.tourpackage.TourPackage;
 import javax.persistence.*;
 
 //(1)
-@Entity
+@Entity(name="tour")
 public class Tour {
 
     @Id

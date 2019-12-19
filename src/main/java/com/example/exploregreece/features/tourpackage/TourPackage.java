@@ -2,7 +2,7 @@ package com.example.exploregreece.features.tourpackage;
 
 import javax.persistence.*;
 
-@Entity // (name = "MY_TABLE_NAME")
+@Entity(name = "tour_package")
 public class TourPackage {
 
     @Id
@@ -11,7 +11,6 @@ public class TourPackage {
 
     private String title;
 
-    @Column(name = "desc")
     private String description;
 
     private double price;
