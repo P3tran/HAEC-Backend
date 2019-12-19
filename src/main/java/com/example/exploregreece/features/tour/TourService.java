@@ -48,7 +48,7 @@ public class TourService {
         Tour mappedTour = mapInputToEntity(input);
 
         Optional<TourPackage> optional = tourPackageRepository.findById(input.getTourPackageId());
-        if(optional.isEmpty())
+        if(optional.isPresent())
             throw new TourPackageNotFoundException();
         mappedTour.setTourPackage(optional.get());
 

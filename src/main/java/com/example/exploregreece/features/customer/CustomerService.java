@@ -48,7 +48,7 @@ public class CustomerService {
     public CustomerResponse updateCustomer(CustomerInput input, long id)
             throws CustomerNotFoundException {
         Optional<Customer> retrievedCustomerOptional = repository.findById(id);
-        if(retrievedCustomerOptional.isEmpty())
+        if(retrievedCustomerOptional.isPresent())
             throw new CustomerNotFoundException();
         else {
             Customer retrievedCustomer = retrievedCustomerOptional.get();
